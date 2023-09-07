@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,8 +37,8 @@ class HomeScreen extends StatelessWidget {
               Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: ElevatedButton(
-                      style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -86,28 +89,44 @@ class _RegisterState extends State<Register> {
           children: <Widget>[
             const Text('Halaman Register'),
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 30, bottom: 20, left: 30, right: 30),
+              padding: const EdgeInsets.only(
+                  top: 30, bottom: 20, left: 30, right: 30),
               child: TextField(
                 controller: _email,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your email'
-                ),
+                enableSuggestions: false,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(hintText: 'Enter your email'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
               child: TextField(
                 controller: _password,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your password'
-                ),
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration:
+                    const InputDecoration(hintText: 'Enter your password'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: ElevatedButton(
-                  onPressed: () async {}, child: const Text('Register')),
+                  onPressed: () async {
+                    await Firebase.initializeApp(
+                      options: DefaultFirebaseOptions.currentPlatform,
+                    );
+                    final email = _email.text;
+                    final password = _password.text;
+                    final userCredential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
+                    print(userCredential);
+                  },
+                  child: const Text('Register')),
             )
           ],
         ),
