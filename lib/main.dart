@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -83,53 +84,59 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('Halaman Register'),
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 30, bottom: 20, left: 30, right: 30),
-              child: TextField(
-                controller: _email,
-                enableSuggestions: false,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(hintText: 'Enter your email'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
-              child: TextField(
-                controller: _password,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration:
-                    const InputDecoration(hintText: 'Enter your password'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    await Firebase.initializeApp(
-                      options: DefaultFirebaseOptions.currentPlatform,
-                    );
-                    final email = _email.text;
-                    final password = _password.text;
-                    final userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    print(userCredential);
-                  },
-                  child: const Text('Register')),
-            )
-          ],
+      body: FutureBuilder(
+        future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
         ),
+        builder: (context, snapshot) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text('Halaman Register'),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 30, bottom: 20, left: 30, right: 30),
+                  child: TextField(
+                    controller: _email,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration:
+                        const InputDecoration(hintText: 'Enter your email'),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 20, left: 30, right: 30),
+                  child: TextField(
+                    controller: _password,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration:
+                        const InputDecoration(hintText: 'Enter your password'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        final email = _email.text;
+                        final password = _password.text;
+                        final userCredential = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        print(userCredential);
+                      },
+                      child: const Text('Register')),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
