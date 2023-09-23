@@ -30,7 +30,7 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: Center(
         child: Column(
@@ -89,7 +89,7 @@ class _RegisterViewState extends State<RegisterView> {
                 Navigator.of(context)
                   .pushNamedAndRemoveUntil('/login', (route) => false);
               },
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
           ],
         ),
