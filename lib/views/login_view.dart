@@ -95,10 +95,10 @@ class _LoginViewState extends State<LoginView> {
                         context,
                         'Wrong password',
                       );
-                    } on GenericAuthException catch(e){
+                    } on GenericAuthException {
                       await showErrorDialog(
                         context,
-                        'Authentication Error\n$e',
+                        'Authentication Error',
                       );
                     }
                   },

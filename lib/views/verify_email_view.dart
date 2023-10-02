@@ -19,9 +19,15 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       body: Center(
         child: Column(
           children: <Widget>[
-            const Text(
-                'Email verification already sent, please open to verify'),
-            const Text('Press button below if you not received email:'),
+            const Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: Text(
+                  'Email verification already sent, please open to verify'),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text('Press button below if you not received email:'),
+            ),
             TextButton(
               onPressed: () async {
                 await AuthService.firebase().sendEmailVerification();
@@ -31,6 +37,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             TextButton(
               onPressed: () async {
                 await AuthService.firebase().logOut();
+                if (!mounted) return;
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   registerRoute,
                   (route) => false,
