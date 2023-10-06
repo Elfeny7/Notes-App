@@ -3,13 +3,26 @@ import 'package:september_app/services/auth/auth_provider.dart';
 import 'package:september_app/services/auth/auth_user.dart';
 import 'package:test/test.dart';
 
-void main() {}
+void main() {
+  group('Mock Authentication', () {
+    final provider = MockAuthProvider();
+    test('Should not be initialized to begin with', () {
+      expect(provider.isInitialized, false);
+    });
+    test('Cannot log out if not initialized', () {
+      expect(
+        provider.logOut(),
+        throwsA(const TypeMatcher<NotInitializedException>()),
+      );
+    });
+  });
+}
 
 class NotInitializedException implements Exception {}
 
 class MockAuthProvider implements AuthProvider {
   AuthUser? _user;
-  var _isInitialized = false;
+  var _isInitialized = true;
   bool get isInitialized => _isInitialized;
 
   @override
@@ -26,7 +39,6 @@ class MockAuthProvider implements AuthProvider {
   }
 
   @override
-  // TODO: implement currentUser
   AuthUser? get currentUser => _user;
 
   @override
@@ -57,7 +69,7 @@ class MockAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<void> sendEmailVerification() async{
+  Future<void> sendEmailVerification() async {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
