@@ -15,6 +15,56 @@ void main() {
         throwsA(const TypeMatcher<NotInitializedException>()),
       );
     });
+    test('Should be able to be intitialized', () async {
+      await provider.initialize();
+      expect(provider.isInitialized, true);
+    });
+    test('User should be null after initialization', () {
+      expect(provider.currentUser, null);
+    });
+    test(
+      'Should be able to initialize in less than 2 second',
+      () async {
+        await provider.initialize();
+        expect(provider.isInitialized, true);
+      },
+      timeout: const Timeout(Duration(seconds: 2)),
+    );
+    test('Create user should delegate to login function', () async {
+      final badEmailUser = provider.createUser(
+        email: 'ikmal@gmail.com',
+        password: 'ikmal123',
+      );
+      expect(badEmailUser,
+          throwsA(const TypeMatcher<UserNotFoundAuthException>()));
+      final badPasswordUser = provider.createUser(
+        email: 'ikmal@gmail.com',
+        password: 'ikmal123',
+      );
+      expect(badPasswordUser,
+          throwsA(const TypeMatcher<UserNotFoundAuthException>()));
+      final user = await provider.createUser(
+        email: 'ikmal',
+        password: 'ikmalfaris',
+      );
+      expect(provider.currentUser, user);
+      expect(user.isEmailVerified, false);
+    });
+    test('Logged in user should be able to get verified', () {
+      provider.sendEmailVerification();
+      final user = provider.currentUser;
+      expect(user, isNotNull);
+      expect(user!.isEmailVerified, true);
+    });
+    test('Should be able to log out and log in again', () async {
+      await provider.logOut();
+      await provider.logIn(
+        email: 'email',
+        password: 'password',
+      );
+      final user = provider.currentUser;
+      expect(user, isNotNull);
+    });
   });
 }
 
@@ -22,7 +72,7 @@ class NotInitializedException implements Exception {}
 
 class MockAuthProvider implements AuthProvider {
   AuthUser? _user;
-  var _isInitialized = true;
+  var _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
   @override
@@ -54,7 +104,7 @@ class MockAuthProvider implements AuthProvider {
   }) {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'ikmal@gmail.com') throw UserNotFoundAuthException();
-    if (password == 'ikmal') throw WrongPasswordAuthException();
+    if (password == 'ikma123') throw WrongPasswordAuthException();
     const user = AuthUser(isEmailVerified: false);
     _user = user;
     return Future.value(user);
