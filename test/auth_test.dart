@@ -49,7 +49,7 @@ void main() {
       );
       expect(badPasswordUser,
           throwsA(const TypeMatcher<WrongPasswordAuthException>()));
-          
+
       final user = await provider.createUser(
         email: 'ikmalfaris',
         password: 'ikmalfaris',
@@ -73,7 +73,6 @@ void main() {
       final user = provider.currentUser;
       expect(user, isNotNull);
     });
-    
   });
 }
 
@@ -114,7 +113,10 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'ikmal@gmail.com') throw UserNotFoundAuthException();
     if (password == 'ikmal') throw WrongPasswordAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(
+      isEmailVerified: false,
+      email: 'ikmal@gmail.com',
+    );
     _user = user;
     return Future.value(user);
   }
@@ -132,7 +134,10 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(
+      isEmailVerified: true,
+      email: 'ikmal@gmail.com',
+    );
     _user = newUser;
   }
 }
