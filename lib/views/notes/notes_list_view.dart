@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:september_app/services/crud/notes_service.dart';
 import 'package:september_app/utilities/dialogs/delete_dialog.dart';
